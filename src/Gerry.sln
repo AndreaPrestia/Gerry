@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gerry.Client", "Gerry.Clien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gerry.Router", "Gerry.Router\Gerry.Router.csproj", "{63668E79-F131-4432-97BD-C7D68E85B534}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7C6AFBC5-CC4A-4F62-A10C-10F234F959E2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{7C6AFBC5-CC4A-4F62-A10C-10F234F959E2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gerry.Router.Example", "Examples\Gerry.Router.Example\Gerry.Router.Example.csproj", "{3D42FF39-8736-4738-84CB-6A32CA2B18E2}"
 EndProject
