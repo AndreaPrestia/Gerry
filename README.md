@@ -22,8 +22,7 @@ The ten endpoints are:
 - messages/{topic}/dispatch
 - messages/{id}/consume
 - messages/{id}/error
-- consumers/{connectionId}/messages
-- consumers/{connectionId}/messages/{topic}
+- messages/{topic}/consumers
 
 These endpoints are documented in the following page:
 
