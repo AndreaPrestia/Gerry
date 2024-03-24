@@ -13,7 +13,7 @@ namespace Gerry.Client;
 
 public static class Extensions
 {
-    public static void AddGerryClient(this IHostBuilder builder, string routerEndpoint, int pooledConnectionLifeTimeMinutes = 15, int maxAttempts = 0)
+    public static void AddGerryClient(this IHostBuilder builder, string routerEndpoint, int pooledConnectionLifeTimeMinutes = 15)
     {
         if (string.IsNullOrWhiteSpace(routerEndpoint))
         {
