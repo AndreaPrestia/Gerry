@@ -10,10 +10,10 @@ The Gerry project is composed of two parts:
 
 This repository provides two examples of usage:
 
-- **Gerry.Client.Test**
-- **Gerry.Router.Test**
+- **Gerry.Client.Example.One**
+- **Gerry.Router.Example**
 
-**Gerry.Router.Test**
+**Gerry.Router.Example**
 
 An ASP-NET minimal API application, containing the five endpoints exposed by Gerry.
 
@@ -173,13 +173,13 @@ Status code | Type | Context |
 401 | UnauthorizedResult | When an operation fails due to missing authorization. |
 403 | ForbiddenResult | When an operation fails because it is not allowed in the context. |
 
-**consumers/{connectionId}/messages**
+**messages/{topic}/consumers**
 
-This endpoint provides a list of the message that are been consumed for the connection id provided in route.
+This endpoint provides a list of the clients connected to Felis that consume a specific topic provided in the route. It exposes only the clients that are configured with the property **IsPublic** to **true**, which makes the clients discoverable.
 
 ```
 curl -X 'GET' \
-  'https://localhost:7110/consumers/AYhRMfzMA62BvJn3paMczQ/messages' \
+  'https://localhost:7110/messages/topic/consumers' \
   -H 'accept: application/json'
 ```
 
@@ -187,89 +187,26 @@ curl -X 'GET' \
 
 ```
 [
-    {
-        "message": {
-            "content": {
-                "json": "string"
-            },
-            "header": {
-                "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                "timestamp": 0,
-                "topic": {
-                    "value": "string"
-                }
-            }
-        },
-        "connectionId": {
-            "value": "AYhRMfzMA62BvJn3paMczQ"
-        },
-	"timestamp": 0
-    }
+   {
+      "ipAddress":"192.168.1.1",
+      "hostname":"host",
+      "isPublic":true,
+      "topics":[
+         {
+            "value":"topic"
+         }
+      ]
+   }
 ]
 ```
-This endpoint returns an array of messages that are consumed, with related connection id and timestamp.
+This endpoint returns an array of clients.
 
-Property | Type | Context |
---- | --- | --- |
-message | object | The message entity used by Gerry system. |
-message.header | object | the message header, containing the metadata of the message. |
-message.header.id | guid | the message global unique identifier. |
-message.header.topic | object | value object containing the topic of the message consumed. |
-message.header.topic.value | string | the actual value of the topic of the message consumed. |
-message.content | object | the message content. |
-message.content.json | string | Json string of the message consumed. |
-connectionId | object | the connectionId value object.    |
-connectionId.value | string | the actual value of the connectionId of the message consumed. |
-timestamp | long | The unix time in milliseconds that provides the consume time. |
-
-**consumers/{connectionId}/messages/{topic}**
-
-This endpoint provides a list of the message that are been consumed for the connection id provided in route and for a specific topic.
-
-```
-curl -X 'GET' \
-  'https://localhost:7110/consumers/AYhRMfzMA62BvJn3paMczQ/messages/topic' \
-  -H 'accept: application/json'
-  ```
-
-***Response***
-
-```
-[
-    {
-       "message": {
-            "content": {
-                "json": "string"
-            },
-            "header": {
-                "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-                "timestamp": 0,
-                "topic": {
-                    "value": "string"
-                }
-            }
-        },
-        "connectionId": {
-            "value": "AYhRMfzMA62BvJn3paMczQ"
-        },
-	"timestamp": 0
-    }
-]
-```
-This endpoint returns an array of messages that are consumed, with related connection id and timestamp.
-
-Property | Type | Context |
---- | --- | --- |
-message | object | The message entity used by Gerry system. |
-message.id | guid | the message global unique identifier. |
-message.header | object | the message header, containing the metadata of the message. |
-message.header.topic | object | value object containing the topic of the message consumed. |
-message.header.topic.value | string | the actual value of the topic of the message consumed. |
-message.content | object | the message content. |
-message.content.json | string | Json string of the message consumed. |
-connectionId | object | the connectionId value object.    |
-connectionId.value | string | the actual value of the connectionId of the message consumed. |
-timestamp | long | The unix time in milliseconds that provides the consume time. |
+Property | Type | Context                                                                                                     |
+--- | --- |-------------------------------------------------------------------------------------------------------------|
+ipAddress | string | The ipAddress property of the consumer.                                                                     |
+hostname | string | The hostname property of the consumer.                                                                      |
+isPublic | boolean | This property tells the router whether the consumer is configured to be discovered by other clients or not. |
+topics | array<Topic> | This property contains the array of topics subscribed by the consumer.                                      |
 
 **Program.cs**
 
@@ -280,7 +217,7 @@ builder.AddGerryRouter(); => this line adds the GerryRouter with its related imp
 app.UseGerryRouter(); => this line uses the implementations and endpoints
 ```
 
-**Gerry.Client.Test**
+**Gerry.Client.Example**
 
 To ease the testing process, I have implemented an ASP-NET minimal API application that exposes a publish endpoint.
 
