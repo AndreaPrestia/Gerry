@@ -47,5 +47,16 @@ internal static class RouterEndpoints
             .Produces<BadRequestResult>(StatusCodes.Status400BadRequest)
             .Produces<UnauthorizedResult>(StatusCodes.Status401Unauthorized)
             .Produces<ForbidResult>(StatusCodes.Status403Forbidden);
+
+        endpointRouteBuilder.MapGet("/messages/{topic}/consumers",
+                ([FromServices] RouterService service, [FromRoute] string? topic) =>
+                {
+                    var result = service.Consumers(new Topic(topic));
+
+                    return Results.Ok(result);
+                }).WithName("ConsumerList").Produces<List<Consumer>>()
+            .Produces<BadRequestResult>(StatusCodes.Status400BadRequest)
+            .Produces<UnauthorizedResult>(StatusCodes.Status401Unauthorized)
+            .Produces<ForbidResult>(StatusCodes.Status403Forbidden);
     }
 }

@@ -14,8 +14,6 @@ public sealed class MessageHandler : IAsyncDisposable
     private readonly ILogger<MessageHandler> _logger;
     private List<Topic>? _topics;
     private readonly HttpClient _httpClient;
-    private RetryPolicy? _retryPolicy;
-    private string? _friendlyName;
     private readonly ListenerResolver _consumerResolver;
 
     public MessageHandler(HubConnection? hubConnection, ILogger<MessageHandler> logger,HttpClient httpClient, IServiceScopeFactory serviceScopeFactory)
@@ -61,16 +59,13 @@ public sealed class MessageHandler : IAsyncDisposable
         }
     }
 
-    public async Task SubscribeAsync(string friendlyName, RetryPolicy? retryPolicy, CancellationToken cancellationToken = default)
+    public async Task SubscribeAsync(CancellationToken cancellationToken = default)
     {
         if (_hubConnection == null)
         {
-            throw new ArgumentNullException($"Connection to Gerry router not correctly initialized");
+            throw new InvalidOperationException("Connection to Gerry router not correctly initialized");
         }
 
-        _retryPolicy = retryPolicy;
-        _friendlyName = friendlyName;
-        
         var topicsTypes = _consumerResolver.GetTypesForTopics();
 
         _topics = topicsTypes.Select(x => x.Key).ToList();
@@ -172,7 +167,7 @@ public sealed class MessageHandler : IAsyncDisposable
                 await _hubConnection?.StartAsync(cancellationToken)!;
             }
 
-            await _hubConnection?.InvokeAsync("SetConnectionId", _topics, _friendlyName, cancellationToken)!;
+            await _hubConnection?.InvokeAsync("SetConnectionId", _topics, cancellationToken)!;
         }
         catch (Exception ex)
         {
@@ -186,7 +181,7 @@ public sealed class MessageHandler : IAsyncDisposable
         {
             var responseMessage = await _httpClient.PostAsJsonAsync($"/messages/{message?.Header?.Id}/error",
                 new ErrorMessage(message,
-                    new ConnectionId(_hubConnection?.ConnectionId), new ErrorDetail(exception?.Message, exception?.StackTrace), _retryPolicy),
+                    new ConnectionId(_hubConnection?.ConnectionId), new ErrorDetail(exception?.Message, exception?.StackTrace)),
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
             responseMessage.EnsureSuccessStatusCode();

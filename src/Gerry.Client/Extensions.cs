@@ -1,6 +1,5 @@
 ﻿using Gerry.Client.Resolvers;
 using Gerry.Core.Abstractions;
-using Gerry.Core.Entities;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Http.Connections.Client;
@@ -14,7 +13,7 @@ namespace Gerry.Client;
 
 public static class Extensions
 {
-    public static void AddGerryClient(this IHostBuilder builder, string routerEndpoint, string friendlyName, int pooledConnectionLifeTimeMinutes = 15, int maxAttempts = 0)
+    public static void AddGerryClient(this IHostBuilder builder, string routerEndpoint, int pooledConnectionLifeTimeMinutes = 15, int maxAttempts = 0)
     {
         if (string.IsNullOrWhiteSpace(routerEndpoint))
         {
@@ -53,7 +52,7 @@ public static class Extensions
 
             var messageHandler = serviceProvider.GetService<MessageHandler>();
 
-            messageHandler?.SubscribeAsync(friendlyName, maxAttempts > 0 ? new RetryPolicy(maxAttempts) : null).Wait();
+            messageHandler?.SubscribeAsync().Wait();
         });
     }
 

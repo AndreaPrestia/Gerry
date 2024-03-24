@@ -108,7 +108,7 @@ internal sealed class RouterService
         }
     }
 
-    public Task<List<Consumer>> Consumers(Topic? topic)
+    public List<Consumer> Consumers(Topic? topic)
     {
         try
         {
@@ -117,12 +117,12 @@ internal sealed class RouterService
                 throw new ArgumentNullException(nameof(topic));
             }
             
-            return Task.FromResult(_connectionManager.GetConnectedConsumers().Where(x => x.Topics.Select(t => t.Value).ToList().Contains(topic.Value)).ToList());
+            return _connectionManager.GetConnectedConsumers().Where(x => x.Topics.Select(t => t.Value).ToList().Contains(topic.Value)).ToList();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return Task.FromResult(new List<Consumer>());
+            return new List<Consumer>();
         }
     }
 }
