@@ -291,6 +291,6 @@ Though there is room for further improvement, the project is fit for becoming a 
 - Stress testing.
 - Encrypt of message.
 - Pinging only specific client.
-
+- Auth flow between client-server. (Public keys flow)
   
 
